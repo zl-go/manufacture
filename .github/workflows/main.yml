@@ -1,0 +1,34 @@
+name: build
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'offersku.json'
+jobs:
+  getlist:
+    runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.set-list.outputs.list }}
+    steps:
+    - uses: actions/checkout@v2
+      name: Check out code
+    - id: set-list
+      run: |
+        echo "::set-output name=list::{\"include\":$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)}" 
+        
+  create-issue:
+    needs: getlist
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.getlist.outputs.list)}}
+      
+    steps:
+      - uses: actions/checkout@v2
+        name: Check out code
+          
+      - name: Create new issues
+        uses: peter-evans/create-issue-from-file@v3
+        with:
+          title: ${{ matrix.appname }} ${{ matrix.version }} on ${{ matrix.os }} on ${{ matrix.platform }}
+          content-filepath: ./list/issue.md
+          token: ${{secrets.GITHUB_TOKEN}}
