@@ -23,7 +23,7 @@
       "distribution": ["CE"],
       "platform": ["AWS"],
       "os": ["AmazonLinux"],
-      "assignees": "王思雨",	   
+      "assignees": "王思宇",	   
      },
      {
       "appname": "Oracle",
@@ -31,7 +31,7 @@
       "distribution": ["express","enterprise"],
       "platform": ["阿里云","华为云"]
       "os": ["Ubuntu"],
-      "assignees": "王思雨",	   
+      "assignees": "王思宇",	   
       }	 
    ]
 }
