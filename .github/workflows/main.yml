@@ -18,6 +18,10 @@ jobs:
         milestone=$(cat offersku.json | jq '.mailstone')
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
+        echo $(curl --request POST \
+                    --url https://api.github.com/graphql \
+                    --header 'Authorization: Bearer TOKEN' \
+                    --data '{"query":"{user(login: \"zl-go\") {projectsV2(first: 20) {nodes {id title}}}}"}')
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq ".[$index].appname")
           version=$(echo $list | jq ".[$index].version")
@@ -27,6 +31,6 @@ jobs:
           assignees=$(echo $list | jq ".[$index].assignees")
           gh issue create --project TODO --assignee assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
         done
-        
-          
+
+
         
