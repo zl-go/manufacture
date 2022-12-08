@@ -17,9 +17,14 @@ jobs:
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
         for ((index=0;index<$length;index++));do
-          echo $list | jq ".[$index].appname";
+          appname=$(echo $list | jq ".[$index].appname")
+          version=$(echo $list | jq ".[$index].version")
+          distribution=$(echo $list | jq ".[$index].distribution")
+          platform=$(echo $list | jq ".[$index].platform")
+          os=$(echo $list | jq ".[$index].os")
+          assignees=$(echo $list | jq ".[$index].assignees")
+          gh issue create --project "TODO" --assignee assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
         done
         
-#        gh issue create --project "Roadmap" --assignee monalisa --title "I found a bug" --body "Nothing works" --body-file <file> --milestone <name>
           
         
