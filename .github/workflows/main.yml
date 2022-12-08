@@ -18,10 +18,6 @@ jobs:
         milestone=$(cat offersku.json | jq '.mailstone')
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
-        echo $(curl --request POST \
-                    --url https://api.github.com/graphql \
-                    --header 'Authorization: Bearer ${{secrets.GITHUB_TOKEN}}' \
-                    --data '{"query":"query{user(login: \"zl-go\") {projectV2(number: 2){id,title}}}"}')
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq ".[$index].appname")
           version=$(echo $list | jq ".[$index].version")
