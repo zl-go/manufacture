@@ -15,7 +15,7 @@ jobs:
       name: Check out code
     - id: set-list
       run: |
-        jq "[.task[] | {milestone,appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json
+        jq "[.task[] | {mailstone,appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json
         cat offersku.json
 #        echo "::set-output name=list::{\"include\":$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)}" 
           
