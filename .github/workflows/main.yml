@@ -13,7 +13,7 @@ jobs:
       name: Check out code
     - name: handle-list
       run: |
-        milestone = $(cat offersku.json | jq '.mailstone')
+        milestone=$(cat offersku.json | jq '.mailstone')
         echo $milestone
         jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json
         cat offersku.json
