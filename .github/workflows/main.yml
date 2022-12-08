@@ -6,33 +6,17 @@ on:
 #     paths: 
 #       - 'offersku.json'
 jobs:
-  getlist:
+  createIssue:
     runs-on: ubuntu-latest
-#     outputs:
-#       list: ${{ steps.set-list.outputs.list }}
     steps:
     - uses: actions/checkout@v2
       name: Check out code
-    - id: set-list
+    - name: handle-list
       run: |
-        jq "[mailstone,.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json
+        milestone = $(cat offersku.json | jq '.mailstone')
+        echo $milestone
+        jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json
         cat offersku.json
-#        echo "::set-output name=list::{\"include\":$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)}" 
+#        gh issue create --project "Roadmap" --assignee monalisa --title "I found a bug" --body "Nothing works" --body-file <file> --milestone <name>
           
         
-#   create-issue:
-#     needs: getlist
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix: ${{fromJson(needs.getlist.outputs.list)}}
-      
-#     steps:
-#       - uses: actions/checkout@v2
-#         name: Check out code
-          
-#       - name: Create new issues
-#         uses: peter-evans/create-issue-from-file@v3
-#         with:
-#           title: ${{ matrix.appname }} ${{ matrix.version }} on ${{ matrix.os }} on ${{ matrix.platform }}
-#           content-filepath: ./list/issue.md
-#           token: ${{secrets.GITHUB_TOKEN}}
