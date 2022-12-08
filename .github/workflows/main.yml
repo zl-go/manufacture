@@ -20,7 +20,7 @@ jobs:
         length=$(echo $list | jq '.|length')
         curl --request POST \
               --url https://api.github.com/graphql \
-              --header 'Authorization: Bearer ${{secrets.GITHUB_TOKEN}}' \
+              --header 'Authorization: Bearer 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' \
               --data '{"query":"query{user(login: \"zl-go\") {projectV2(number: 1){id}}}"}'
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq ".[$index].appname")
