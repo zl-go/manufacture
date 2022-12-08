@@ -8,7 +8,7 @@ on:
 jobs:
   createIssue:
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
         length=$(echo $list | jq '.|length')
         echo $(curl --request POST \
                     --url https://api.github.com/graphql \
-                    --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+                    --header 'Authorization: Bearer ${{secrets.GITHUB_TOKEN}}' \
                     --data '{"query":"query{user(login: \"zl-go\") {projectV2(number: 2){id,title}}}"}')
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq ".[$index].appname")
