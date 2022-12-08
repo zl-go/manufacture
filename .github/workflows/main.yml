@@ -20,7 +20,7 @@ jobs:
         length=$(echo $list | jq '.|length')
         curl --request POST \
               --url https://api.github.com/graphql \
-              --header 'Authorization: Bearer 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' \
+              -H "Authorization: Bearer ${{github.token}}" \
               --data '{"query":"query{user(login: \"zl-go\") {projectV2(number: 1){id}}}"}'
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq ".[$index].appname")
@@ -31,6 +31,7 @@ jobs:
           assignees=$(echo $list | jq ".[$index].assignees")
           gh issue create --project TODO --assignee assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
         done
+
 
 
         
