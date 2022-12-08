@@ -16,7 +16,7 @@ jobs:
         milestone=$(cat offersku.json | jq '.mailstone')
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
-        for index in `seq 0 $length`;do
+        for index in `seq 0 $length-1`;do
           echo $list | jq ".[$index].appname";
         done
         
