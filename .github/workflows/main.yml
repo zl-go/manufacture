@@ -16,8 +16,10 @@ jobs:
         milestone=$(cat offersku.json | jq '.mailstone')
         jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json > test.json
         num=$(jq '.|length' test.json)
-        echo $num
-        cat test.json
+        for ((i=0; i<$num; i++));do
+            appname=$(jq '.[$i].appname' test.json)
+            echo $appname
+        done
         
 #        gh issue create --project "Roadmap" --assignee monalisa --title "I found a bug" --body "Nothing works" --body-file <file> --milestone <name>
           
