@@ -28,7 +28,6 @@ jobs:
             break
           fi 
         done
-        echo $createFlag
         if [[ $createFlag == "true" ]];then
           echo "create new milestone"
           curl \
@@ -50,7 +49,7 @@ jobs:
           platform=$(echo $list | jq -r ".[$index].platform")
           os=$(echo $list | jq -r ".[$index].os")
           assignees=$(echo $list | jq -r ".[$index].assignees")
-          gh issue create --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
+          gh issue create --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone `$milestone | sed 's/\"//g'`
         done
 
 
