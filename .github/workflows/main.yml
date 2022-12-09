@@ -52,12 +52,8 @@ jobs:
           assignee=$(echo $list | jq -r ".[$index].assignees")
           stone=$(echo $milestone | sed 's/\"//g')
           issue_id=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $stone | awk -F "/" '{print $NF}')
-          gh api -f project="2" -f item="$issue_id" -f query='
-            mutation AddToProject($project: ID!, $item: ID!) {
-              addProjectNextItem(input: { projectId: $project, contentId: $item }) {
-                projectNextItem {
-                  id
-                }
-              }
-            }'
+          curl --request POST \
+            --url https://api.github.com/graphql \
+            --header 'Authorization: Bearer ${{github.token}}' \
+            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"2\" contentId: \"$issue_id\"}) {item {id}}}"}'
         done
