@@ -42,7 +42,6 @@ jobs:
         
         length=$(echo $list | jq '.|length')  
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
-        length=$(echo $list | jq '.|length')
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq -r ".[$index].appname")
           version=$(echo $list | jq -r ".[$index].version")
