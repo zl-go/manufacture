@@ -24,7 +24,7 @@ jobs:
         
         createFlag=ture
         for item in $allMilestones;do
-          if [$item==$milestone];then
+          if [[$item==$milestone]];then
             $createFlag=false
             break
           fi 
