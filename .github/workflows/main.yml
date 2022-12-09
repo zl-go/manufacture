@@ -30,7 +30,8 @@ jobs:
           fi 
         done
         
-        if [[ $createFlag = true ]];then
+        if [[ $createFlag == true ]];then
+          echo "create new milestone"
           curl \
             -X POST \
             -H "Accept: application/vnd.github+json" \
