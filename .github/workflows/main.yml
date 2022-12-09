@@ -1,8 +1,7 @@
 name: build
 on:
-  workflow_dispatch
-#   push:
-#     branches: [ main ]
+  push:
+    branches: [ main ]
 #     paths: 
 #       - 'offersku.json'
 jobs:
@@ -18,10 +17,6 @@ jobs:
         milestone=$(cat offersku.json | jq '.mailstone')
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
-        curl --request POST \
-              --url https://api.github.com/graphql \
-              -H "Authorization: Bearer ${{github.token}}" \
-              --data '{"query":"query{user(login: \"zl-go\") {projectV2(number: 1){id}}}"}'
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq ".[$index].appname")
           version=$(echo $list | jq ".[$index].version")
@@ -29,7 +24,7 @@ jobs:
           platform=$(echo $list | jq ".[$index].platform")
           os=$(echo $list | jq ".[$index].os")
           assignees=$(echo $list | jq ".[$index].assignees")
-          gh issue create --project TODO --assignee assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
+          gh issue create --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
         done
 
 
