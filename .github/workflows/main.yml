@@ -65,6 +65,6 @@ jobs:
           echo $project_id
           curl --request POST \
             --url https://api.github.com/graphql \
-            --header 'Authorization: Bearer ${{github.token}}' \
+            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}'
         done
