@@ -24,13 +24,13 @@ jobs:
         
         createFlag=ture
         for item in $allMilestones;do
-          if [$item=$milestone];then
+          if [[ $item == $milestone ]];then
             $createFlag=false
             break
           fi 
         done
         
-        if [$createFlag=true];then
+        if [[ $createFlag = true ]];then
           curl \
             -X POST \
             -H "Accept: application/vnd.github+json" \
