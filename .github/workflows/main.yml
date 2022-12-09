@@ -2,8 +2,8 @@ name: build
 on:
   push:
     branches: [ main ]
-    paths: 
-      - 'offersku.json'
+#     paths: 
+#       - 'offersku.json'
 jobs:
   createIssue:
     env:
@@ -42,6 +42,7 @@ jobs:
         
         length=$(echo $list | jq '.|length')  
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
+        length=$(echo $list | jq '.|length')
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq -r ".[$index].appname")
           version=$(echo $list | jq -r ".[$index].version")
@@ -52,7 +53,3 @@ jobs:
           stone=$(echo $milestone | sed 's/\"//g')
           gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $stone
         done
-
-
-
-        
