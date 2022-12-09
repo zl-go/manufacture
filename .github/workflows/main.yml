@@ -54,7 +54,7 @@ jobs:
           issue_id=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $stone | awk -F "/" '{print $NF}')
           curl --request POST \
             --url https://api.github.com/graphql \
-            --header 'Authorization: Bearer ${{github.token}}' \
+            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 2){id}}}"}'
           curl --request POST \
             --url https://api.github.com/graphql \
