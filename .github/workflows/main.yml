@@ -18,12 +18,12 @@ jobs:
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
         for ((index=0;index<$length;index++));do
-          appname=$(echo $list | jq ".[$index].appname")
-          version=$(echo $list | jq ".[$index].version")
-          distribution=$(echo $list | jq ".[$index].distribution")
-          platform=$(echo $list | jq ".[$index].platform")
-          os=$(echo $list | jq ".[$index].os")
-          assignees=$(echo $list | jq ".[$index].assignees")
+          appname=$(echo $list | jq ".[$index].appname" | sed 's/\"//g')
+          version=$(echo $list | jq ".[$index].version" | sed 's/\"//g')
+          distribution=$(echo $list | jq ".[$index].distribution" | sed 's/\"//g')
+          platform=$(echo $list | jq ".[$index].platform" | sed 's/\"//g')
+          os=$(echo $list | jq ".[$index].os" | sed 's/\"//g')
+          assignees=$(echo $list | jq ".[$index].assignees" | sed 's/\"//g')
           gh issue create --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
         done
 
