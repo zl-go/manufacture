@@ -20,7 +20,7 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{secrets.GIHUB_TOKEN}}"\
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones | jq ".title[]" | sed 's/\"//g')
+          https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones | jq ".title" | sed 's/\"//g')
           
         cat $allMilestones  
         
