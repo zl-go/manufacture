@@ -24,7 +24,7 @@ jobs:
         createFlag="true"
         for item in $allMilestones;do
           if [[ $item == $milestone ]];then
-            $createFlag="false"
+            createFlag="false"
             break
           fi 
         done
