@@ -43,6 +43,11 @@ jobs:
         length=$(echo $list | jq '.|length')  
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
+        project_id=$(curl --request POST \
+          --url https://api.github.com/graphql \
+          --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
+          --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 2){id}}}"}' | jq -r .data.user.projectV2.id)
+        echo $project_id
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq -r ".[$index].appname")
           version=$(echo $list | jq -r ".[$index].version")
@@ -58,11 +63,6 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/${{github.repository_owner}}/manufacture/issues/$issue_number | jq -r .node_id)
           echo $issue_id
-          project_id=$(curl --request POST \
-            --url https://api.github.com/graphql \
-            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-            --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 2){id}}}"}' | jq -r .data.user.projectV2.id)
-          echo $project_id
           curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
