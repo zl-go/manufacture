@@ -14,13 +14,13 @@ jobs:
       name: Check out code
     - name: handle-list
       run: |
-        milestone=$(cat offersku.json | jq '.mailstone' | sed 's/\"//g')
+        milestone=$(cat offersku.json | jq -r '.mailstone')
         
         allMilestones=$(curl \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{github.token}}"\
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones)
+          https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones | jq '.[] | .name')
           
         echo $allMilestones  
         
@@ -30,12 +30,12 @@ jobs:
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
         for ((index=0;index<$length;index++));do
-          appname=$(echo $list | jq ".[$index].appname" | sed 's/\"//g')
-          version=$(echo $list | jq ".[$index].version" | sed 's/\"//g')
-          distribution=$(echo $list | jq ".[$index].distribution" | sed 's/\"//g')
-          platform=$(echo $list | jq ".[$index].platform" | sed 's/\"//g')
-          os=$(echo $list | jq ".[$index].os" | sed 's/\"//g')
-          assignees=$(echo $list | jq ".[$index].assignees" | sed 's/\"//g')
+          appname=$(echo $list | jq -r ".[$index].appname")
+          version=$(echo $list | jq -r ".[$index].version")
+          distribution=$(echo $list | jq -r ".[$index].distribution")
+          platform=$(echo $list | jq -r ".[$index].platform")
+          os=$(echo $list | jq -r ".[$index].os")
+          assignees=$(echo $list | jq -r ".[$index].assignees")
           gh issue create --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
         done
 
