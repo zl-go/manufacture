@@ -14,7 +14,9 @@ jobs:
       name: Check out code
     - name: handle-list
       run: |
-        deleteRow=$(grep -n "\-\-\-" .github/ISSUE_TEMPLATE/create_offersku.md | cut -d ":" -f 1 | sed -n '2p')
-        echo $deleteRow
-        sed -i "1,'${deleteRow}'d" .github/ISSUE_TEMPLATE/create_offersku.md > template.md
+        cat .github/ISSUE_TEMPLATE/create_offersku.md > template.md
+        deleteRow=$(grep -n "\-\-\-" template.md | cut -d ":" -f 1 | sed -n '2p')
+        for ((index=0;index<$deleteRow;index++));do
+          sed -i "${index}d" template.md
+        done
         cat template.md
