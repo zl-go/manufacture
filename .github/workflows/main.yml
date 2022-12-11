@@ -26,5 +26,5 @@ jobs:
         echo $field_id
         status_id=$(echo $field_id | jq -r '.data.node.fields.nodes[2].id')
         echo $status_id
-        field_id=$(echo $status_id | jq -r '.data.node.fields.nodes[2].options[1].id')
+        produce_id=$(echo $status_id | jq -r '.data.node.fields.nodes[2].options[1].id')
         echo $produce_id
