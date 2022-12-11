@@ -18,7 +18,10 @@ jobs:
           --url https://api.github.com/graphql \
           --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
           --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 2){id}}}"}' | jq -r .data.user.projectV2.id)
-        curl --request POST \
+        field_id=$(curl --request POST \
           --url https://api.github.com/graphql \
           --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-          --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2Field { id name } ... on ProjectV2IterationField { id name configuration { iterations { startDate id }}} ... on ProjectV2SingleSelectField { id name options { id name }}}}}}}"}'
+          --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2Field { id name } ... on ProjectV2IterationField { id name configuration { iterations { startDate id }}} ... on ProjectV2SingleSelectField { id name options { id name }}}}}}}"}')
+        status_id=$(echo $field_id | jq -r '.data.node.fields.nodes[2].id'
+        produce_id=$(echo $field_id | jq -r '.data.node.fields.nodes[2].options[1].id'
+        
