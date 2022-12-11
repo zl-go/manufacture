@@ -3,7 +3,7 @@
 	"task": [
 		{
 			"appname": "mysql",
-			"version": ["110.0"],
+			"version": ["10.0"],
 			"distribution": ["CE"],
 			"platform": ["Azure"],
 			"os": ["Centos7.9"],
