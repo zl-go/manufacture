@@ -19,4 +19,57 @@ jobs:
         for ((index=0;index<$deleteRow;index++));do
           sed -i '1d' template.md
         done
-        cat template.md
+        milestone=$(cat offersku.json | jq '.mailstone')
+        allMilestones=$(curl \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{github.token}}"\
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones | jq  '.[] | .title')
+        
+        createFlag="true"
+        for item in $allMilestones;do
+          if [[ $item == $milestone ]];then
+            createFlag="false"
+            echo "milestone exist"
+            break
+          fi 
+        done
+        if [[ $createFlag == "true" ]];then
+          echo "create new milestone"
+          curl \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{github.token}}"\
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones \
+            -d '{"title":'$milestone',"state":"open"}'
+        fi
+        
+        length=$(echo $list | jq '.|length')  
+        list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
+        length=$(echo $list | jq '.|length')
+        project_id=$(curl --request POST \
+          --url https://api.github.com/graphql \
+          --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
+          --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 2){id}}}"}' | jq -r .data.user.projectV2.id)
+        echo $project_id
+        for ((index=0;index<$length;index++));do
+          appname=$(echo $list | jq -r ".[$index].appname")
+          version=$(echo $list | jq -r ".[$index].version")
+          distribution=$(echo $list | jq -r ".[$index].distribution")
+          platform=$(echo $list | jq -r ".[$index].platform")
+          os=$(echo $list | jq -r ".[$index].os")
+          assignee=$(echo $list | jq -r ".[$index].assignees")
+          stone=$(echo $milestone | sed 's/\"//g')
+          issue_number=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file template.md --milestone $stone | awk -F "/" '{print $NF}')
+          issue_id=$(curl \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{github.token}}"\
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{github.repository_owner}}/manufacture/issues/$issue_number | jq -r .node_id)
+          echo $issue_id
+          curl --request POST \
+            --url https://api.github.com/graphql \
+            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
+            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}'
+        done
