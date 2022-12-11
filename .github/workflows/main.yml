@@ -16,7 +16,7 @@ jobs:
       run: |
         cat .github/ISSUE_TEMPLATE/create_offersku.md > template.md
         deleteRow=$(grep -n "\-\-\-" template.md | cut -d ":" -f 1 | sed -n '2p')
-        for ((index=1;index<=$deleteRow;index++));do
-          sed -i "${index}d" template.md
+        for ((index=0;index<$deleteRow;index++));do
+          sed -i '1d' template.md
         done
         cat template.md
