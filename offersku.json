@@ -4,7 +4,7 @@
 		{
 			"appname": "mysql",
 			"version": ["1z.0","2x.0"],
-			"distribution": ["CE,SE"],
+			"distribution": ["CE","SE"],
 			"platform": ["Azure"],
 			"os": ["Centos7.9"],
 			"assignees": "张露"
