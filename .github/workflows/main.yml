@@ -52,7 +52,10 @@ jobs:
           --url https://api.github.com/graphql \
           --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
           --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 2){id}}}"}' | jq -r .data.user.projectV2.id)
-
+        
+        declare -A map
+        map=(["童颖佳"]="Tooy1011" ["张露"]="zl-go" ["王思宇"]="LalicNine" ["徐月婷"]="xyt52")
+        
         # 创建issue
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq -r ".[$index].appname")
@@ -60,7 +63,7 @@ jobs:
           distribution=$(echo $list | jq -r ".[$index].distribution")
           platform=$(echo $list | jq -r ".[$index].platform")
           os=$(echo $list | jq -r ".[$index].os")
-          assignee=$(echo $list | jq -r ".[$index].assignees")
+          assignee=$(map[echo $list | jq -r ".[$index].assignees"])
           stone=$(echo $milestone | sed 's/\"//g')
           issue_number=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file template.md --milestone $stone | awk -F "/" '{print $NF}')
           # 关联project
