@@ -53,10 +53,6 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
           --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 2){id}}}"}' | jq -r .data.user.projectV2.id)
 
-        # 建立名字与githu账户的对应
-        declare -A map
-        map=(["童颖佳"]="Tooy1011" ["张露"]="zl-go" ["王思宇"]="LalicNine" ["徐月婷"]="xyt52")
-        
         # 创建issue
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq -r ".[$index].appname")
@@ -64,17 +60,17 @@ jobs:
           distribution=$(echo $list | jq -r ".[$index].distribution")
           platform=$(echo $list | jq -r ".[$index].platform")
           os=$(echo $list | jq -r ".[$index].os")
-          assignee=${map[$(echo $list | jq -r ".[$index].assignees")]}
+          assignee=$(echo $list | jq -r ".[$index].assignees")
           stone=$(echo $milestone | sed 's/\"//g')
-          issue_number=$(gh issue create --assignee $assignee --project $project_id --title "$appname$version $distribution on $os on $platform" --body-file template.md --milestone $stone | awk -F "/" '{print $NF}')
+          issue_number=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file template.md --milestone $stone | awk -F "/" '{print $NF}')
           # 关联project
-#           issue_id=$(curl \
-#             -H "Accept: application/vnd.github+json" \
-#             -H "Authorization: Bearer ${{github.token}}"\
-#             -H "X-GitHub-Api-Version: 2022-11-28" \
-#             https://api.github.com/repos/${{github.repository_owner}}/manufacture/issues/$issue_number | jq -r .node_id)
-#           curl --request POST \
-#             --url https://api.github.com/graphql \
-#             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-#             --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}'
+          issue_id=$(curl \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{github.token}}"\
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{github.repository_owner}}/manufacture/issues/$issue_number | jq -r .node_id)
+          curl --request POST \
+            --url https://api.github.com/graphql \
+            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
+            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}'
         done
