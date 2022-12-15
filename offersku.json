@@ -7,7 +7,7 @@
 			"distribution": ["CE"],
 			"platform": ["Azure"],
 			"os": ["Centos7.9"],
-			"assignees": "zl-go"
+			"assignees": "张露"
 		}
 	]
 }
